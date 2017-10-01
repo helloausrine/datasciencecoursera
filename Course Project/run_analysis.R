@@ -22,7 +22,7 @@ featuresWanted <- grep("(mean|std)\\(\\)", features[, featureNames])
 measurements <- features[featuresWanted, featureNames]
 measurements <- gsub('[()]', '', measurements)
 
-# Loading train datasets
+# Loading train data sets
 train <- fread(file.path(path, "UCI HAR Dataset/train/X_train.txt"))[, featuresWanted, with = FALSE]
 data.table::setnames(train, colnames(train), measurements)
 trainActivities <- fread(file.path(path, "UCI HAR Dataset/train/Y_train.txt")
@@ -31,7 +31,7 @@ trainSubjects <- fread(file.path(path, "UCI HAR Dataset/train/subject_train.txt"
                        , col.names = c("SubjectNum"))
 train <- cbind(trainSubjects, trainActivities, train)
 
-# Loading test datasets
+# Loading test data sets
 test <- fread(file.path(path, "UCI HAR Dataset/test/X_test.txt"))[, featuresWanted, with = FALSE]
 data.table::setnames(test, colnames(test), measurements)
 testActivities <- fread(file.path(path, "UCI HAR Dataset/test/Y_test.txt")
@@ -40,7 +40,7 @@ testSubjects <- fread(file.path(path, "UCI HAR Dataset/test/subject_test.txt")
                       , col.names = c("SubjectNum"))
 test <- cbind(testSubjects, testActivities, test)
 
-# Merging the datasets
+# Merging the data sets
 combined <- rbind(train, test)
 
 # Converting classLabels to activityName
@@ -48,9 +48,10 @@ combined[["Activity"]] <- factor(combined[, Activity]
                               , levels = activityLabels[["classLabels"]]
                               , labels = activityLabels[["activityName"]])
 
+# Getting the averages
 combined[["SubjectNum"]] <- as.factor(combined[, SubjectNum])
 combined <- reshape2::melt(data = combined, id = c("SubjectNum", "Activity"))
 combined <- reshape2::dcast(data = combined, SubjectNum + Activity ~ variable, fun.aggregate = mean)
 
-# Write the tab delimited file
+# Saving the file
 write.table(combined, file="tidyData.txt", row.name=FALSE, sep = "\t")

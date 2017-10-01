@@ -7,6 +7,13 @@
 4. The README that explains the analysis files is clear and understandable.
 5. The work submitted for this project is the work of the student who submitted it.
 
+# R Script Analysis Tasks:
+1. Merges the training and the test sets to create one data set.
+2. Extracts only the measurements on the mean and standard deviation for each measurement.
+3. Uses descriptive activity names to name the activities in the data set
+4. Appropriately labels the data set with descriptive variable names.
+5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+
 # R Script Analysis Steps:
 1. Loading the packages and getting the data
 2. Loading the activity labels and features
@@ -21,7 +28,3 @@
 1. Tidy Data Set - [click here](https://github.com/helloausrine/datasciencecoursera/blob/master/Course%20Project/tidydataset.txt)
 2. R script analysis - [click here](https://github.com/helloausrine/datasciencecoursera/blob/master/Course%20Project/run_analysis.R)
 3. Code book - [click here](https://github.com/helloausrine/datasciencecoursera/blob/master/Course%20Project/codebook.md)
-
-# Data Source
-
-Can be found [here](http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones)

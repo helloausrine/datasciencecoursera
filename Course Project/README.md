@@ -12,6 +12,6 @@
 2. R script analysis - [click here](https://github.com/helloausrine/datasciencecoursera/blob/master/Course%20Project/run_analysis.R)
 3. Code book - [click here](https://github.com/helloausrine/datasciencecoursera/blob/master/Course%20Project/codebook.md)
 
-#Data Source
+# Data Source
 
 Can be found [here](http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones)

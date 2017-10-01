@@ -1,3 +1,10 @@
+#You should create one R script called run_analysis.R that does the following.
+# 1. Merges the training and the test sets to create one data set.
+# 2. Extracts only the measurements on the mean and standard deviation for each measurement.
+# 3. Uses descriptive activity names to name the activities in the data set
+# 4. Appropriately labels the data set with descriptive variable names.
+# 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+
 # Loading the packages and getting the data
 packages <- c("data.table", "reshape2")
 sapply(packages, require, character.only=TRUE, quietly=TRUE)
@@ -45,4 +52,5 @@ combined[["SubjectNum"]] <- as.factor(combined[, SubjectNum])
 combined <- reshape2::melt(data = combined, id = c("SubjectNum", "Activity"))
 combined <- reshape2::dcast(data = combined, SubjectNum + Activity ~ variable, fun.aggregate = mean)
 
-data.table::fwrite(x = combined, file = "tidyData.txt", quote = FALSE)
+# Write the tab delimited file
+write.table(combined, file="tidyData.txt", row.name=FALSE, sep = "\t")

@@ -8,6 +8,6 @@
 5. The work submitted for this project is the work of the student who submitted it.
 
 # Assignment Results
-1. Tidy Data Set -
-2. R script analysis - (link)
-3. Code book - 
+1. Tidy Data Set - [click here](https://github.com/helloausrine/datasciencecoursera/blob/master/Course%20Project/tidydataset.txt)
+2. R script analysis - [click here](https://github.com/helloausrine/datasciencecoursera/blob/master/Course%20Project/run_analysis.R)
+3. Code book - [click here](https://github.com/helloausrine/datasciencecoursera/blob/master/Course%20Project/codebook.md)

@@ -7,6 +7,16 @@
 4. The README that explains the analysis files is clear and understandable.
 5. The work submitted for this project is the work of the student who submitted it.
 
+# R Script Analysis Steps:
+1. Loading the packages and getting the data
+2. Loading the activity labels and features
+3. Loading train datasets
+4. Loading test datasets
+5. Merging the datasets
+6. Converting classLabels to activityName
+7. Getting the averages
+8. Saving the file
+
 # Assignment Results
 1. Tidy Data Set - [click here](https://github.com/helloausrine/datasciencecoursera/blob/master/Course%20Project/tidydataset.txt)
 2. R script analysis - [click here](https://github.com/helloausrine/datasciencecoursera/blob/master/Course%20Project/run_analysis.R)

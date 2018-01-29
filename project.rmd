@@ -2,7 +2,7 @@
 title: "Moter Trend -  The relationship between a set of variables and miles per gallon"
 author: "Ausrine Stankeviciute"
 date: "29 January 2018"
-output: output: rmarkdown::github_document
+output: rmarkdown
 ---
 
 ```{r setup, include=FALSE}

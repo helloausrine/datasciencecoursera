@@ -24,13 +24,10 @@ The data for this project come from this source: http://web.archive.org/web/2016
 ###  Getting the Data
 
 ```{r}
-# Download data
 trainingUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
 testingUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
 download.file(trainingUrl, destfile = "./data/training.csv", method = "curl")
 download.file(testingUrl, destfile = "./data/testing.csv", method = "curl")
-
-# Read data
 training <- read.csv("./data/training.csv", na.strings = c("NA", "#DIV/0!"))
 testing <- read.csv("./data/testing.csv", na.strings = c("NA", "#DIV/0!"))
 ```
@@ -48,24 +45,20 @@ The training set has 19622 observations of 160 variables while in the testing se
 ### Cleaning the Data
 
 ```{r}
-# Remove variables in the training set with too much NAs 
 goodCol <- colSums(is.na(training)) < 1900
 myTraining <- training[ , goodCol][ , ]
-
-# Remove the same columns in the test set
 myTesting <- testing[ , goodCol][ , ]
-
-# Remove the first seven columns in both sets
 myTraining <- myTraining[ , -(1:7)]
 myTesting <- myTesting[ , -(1:7)] 
 View(myTraining)
 View(myTesting)
 ```
 
+Here variables that contained many NA values were removed in order to clean the data.
+
 ### Subsetting the Training Data
 
 ```{r}
-# Create inTraining and inTesting
 library(caret)
 set.seed(4848)
 inTrain <- createDataPartition(y = myTraining$classe, p = 0.75, list = FALSE)
@@ -75,10 +68,7 @@ inTesting <- myTraining[-inTrain, ]
 
 ### Building the Model
 
-Tree methods were tried: gradient boosting with "gbm", random forests with "rf" and random forests using the randomForest() functiom. The first two revealed themselves to be painfully slow, so they were disregarded and randomForest was choosed to training, tunning and testing.
-
 ```{r}
-# Train with randomForest
 library(randomForest)
 set.seed(555)
 rfGrid <-  expand.grid(interaction.depth = c(1, 5, 9),
@@ -89,28 +79,22 @@ print(modelFit)
 plot(modelFit)
 ```
 
-This model looked promissing, with very low classification errors in all classes, and a Out of the Bag
-(OOB) error estimate that descends swiftly to near 0, as we can see in the plot above.
-
 ### Cross Validation
  
 ```{r}
-# Test "out of sample"
 predictions <- predict(modelFit, newdata = inTesting)
 confusionMatrix(predictions, inTesting$classe)
 ```
 
-The model passed the test, with a global accuracy of 0.9988, a kappa of 0.9985 and with near perfect
-sensivity and specificity for all classes.
+The model is confirmed to be sound in terms of sensitivity and accuracy.
 
 ### Final Validation 
 
 ```{r}
-# Test validation sample
 answers <- predict(modelFit, newdata = myTesting, type = "response")
 print(answers)
 ```
 
 ### Conclusion
 
-All the 20 answers were validated as correct at the PML project submission page. 
+As seen in the final validation, the 20 answers were indeed correct.

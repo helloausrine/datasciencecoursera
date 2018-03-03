@@ -1,1 +1,116 @@
+---
+title: "Prediction Assignment Writeup"
+author: "helloausrine"
+date: "March 3, 2018"
+output: rmd_document
+---
 
+### Introduction
+
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://web.archive.org/web/20161224072740/http:/groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset).
+
+Data
+
+The training data for this project are available here:
+
+https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv
+
+The test data are available here:
+
+https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv
+
+The data for this project come from this source: http://web.archive.org/web/20161224072740/http:/groupware.les.inf.puc-rio.br/har. If you use the document you create for this class for any purpose please cite them as they have been very generous in allowing their data to be used for this kind of assignment.
+
+###  Getting the Data
+
+```{r}
+# Download data
+trainingUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+testingUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+download.file(trainingUrl, destfile = "./data/training.csv", method = "curl")
+download.file(testingUrl, destfile = "./data/testing.csv", method = "curl")
+
+# Read data
+training <- read.csv("./data/training.csv", na.strings = c("NA", "#DIV/0!"))
+testing <- read.csv("./data/testing.csv", na.strings = c("NA", "#DIV/0!"))
+```
+
+### Examining the Data
+
+```{r}
+library(dplyr)
+View(training)
+View(testing)
+```
+
+The training set has 19622 observations of 160 variables while in the testing set there are 20 observations of 160 variables. There are a lot of NAs present in the data. 
+
+### Cleaning the Data
+
+```{r}
+# Remove variables in the training set with too much NAs 
+goodCol <- colSums(is.na(training)) < 1900
+myTraining <- training[ , goodCol][ , ]
+
+# Remove the same columns in the test set
+myTesting <- testing[ , goodCol][ , ]
+
+# Remove the first seven columns in both sets
+myTraining <- myTraining[ , -(1:7)]
+myTesting <- myTesting[ , -(1:7)] 
+View(myTraining)
+View(myTesting)
+```
+
+### Subsetting the Training Data
+
+```{r}
+# Create inTraining and inTesting
+library(caret)
+set.seed(4848)
+inTrain <- createDataPartition(y = myTraining$classe, p = 0.75, list = FALSE)
+inTraining <- myTraining[inTrain, ]
+inTesting <- myTraining[-inTrain, ]
+```
+
+### Building the Model
+
+Tree methods were tried: gradient boosting with "gbm", random forests with "rf" and random forests using the randomForest() functiom. The first two revealed themselves to be painfully slow, so they were disregarded and randomForest was choosed to training, tunning and testing.
+
+```{r}
+# Train with randomForest
+library(randomForest)
+set.seed(555)
+rfGrid <-  expand.grid(interaction.depth = c(1, 5, 9),
+                        n.trees = (1:30)*50,
+                        shrinkage = 0.1)
+modelFit <- randomForest(classe ~., data = inTraining, tuneGrid = rfGrid) 
+print(modelFit)
+plot(modelFit)
+```
+
+This model looked promissing, with very low classification errors in all classes, and a Out of the Bag
+(OOB) error estimate that descends swiftly to near 0, as we can see in the plot above.
+
+### Cross Validation
+ 
+```{r}
+# Test "out of sample"
+predictions <- predict(modelFit, newdata = inTesting)
+confusionMatrix(predictions, inTesting$classe)
+```
+
+The model passed the test, with a global accuracy of 0.9988, a kappa of 0.9985 and with near perfect
+sensivity and specificity for all classes.
+
+### Final Validation 
+
+```{r}
+# Test validation sample
+answers <- predict(modelFit, newdata = myTesting, type = "response")
+print(answers)
+```
+
+### Conclusion
+
+All the 20 answers were validated as correct at the PML project submission page. 
